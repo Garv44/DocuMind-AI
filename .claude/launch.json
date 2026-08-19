@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "backend",
+      "runtimeExecutable": "/Users/garvchaplot/Documents/Claude UI/backend/.venv/bin/uvicorn",
+      "runtimeArgs": [
+        "app.main:app",
+        "--host", "127.0.0.1",
+        "--port", "8000",
+        "--app-dir", "/Users/garvchaplot/Documents/Claude UI/backend"
+      ],
+      "port": 8000
+    },
+    {
+      "name": "frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "/Users/garvchaplot/Documents/Claude UI/frontend", "run", "dev"],
+      "port": 5173,
+      "autoPort": true
+    }
+  ]
+}
