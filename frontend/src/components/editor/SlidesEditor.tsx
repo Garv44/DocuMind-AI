@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   AlignCenter, AlignLeft, AlignRight, Baseline, Bold, ChevronDown, ChevronUp, Copy,
   Italic, Layout, Plus, Trash2, Underline as UnderlineIcon,
@@ -70,13 +70,14 @@ export function SlidesEditor({ document: doc, onChange }: Props) {
   }
 
   // Keep the authored slide size honest: scale the whole canvas instead of the text,
-  // so a 40px title here is still a 40pt title in the exported deck.
-  useEffect(() => {
+  // so a 40px title here is still a 40pt title in the exported deck. useLayoutEffect
+  // measures once synchronously before paint, so the canvas is never shown unscaled.
+  useLayoutEffect(() => {
     const node = stageRef.current;
     if (!node) return;
-    const observer = new ResizeObserver(([entry]) => {
-      setScale(Math.min(1, Math.max(0.2, entry.contentRect.width / SLIDE_W)));
-    });
+    const fit = (width: number) => setScale(Math.min(1, Math.max(0.2, width / SLIDE_W)));
+    fit(node.clientWidth);
+    const observer = new ResizeObserver(([entry]) => fit(entry.contentRect.width));
     observer.observe(node);
     return () => observer.disconnect();
   }, []);

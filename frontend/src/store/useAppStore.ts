@@ -84,6 +84,13 @@ export const useAppStore = create<AppState>((set, get) => ({
       set({ error: 'Backend is unreachable. Start it with: uvicorn app.main:app --reload' });
     }
     await Promise.all([get().loadConversations(), get().loadRecentDocuments()]);
+
+    // Deep links: ?chat=<id> restores a conversation, ?doc=<id> opens a document.
+    const params = new URLSearchParams(window.location.search);
+    const chatId = params.get('chat');
+    const docId = params.get('doc');
+    if (chatId) await get().selectConversation(chatId);
+    if (docId) await get().openDocument(docId);
   },
 
   async loadConversations() {
